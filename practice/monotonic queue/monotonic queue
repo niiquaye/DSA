@@ -1,0 +1,109 @@
+💯 **Absolutely! Awesome that you want to master both increasing and decreasing monotonic queue problems — that level of precision will really set you apart in interviews!**
+
+---
+
+## 🚀 **Monotonic Queue Problem List (Separated by Queue Type)**
+
+---
+
+### 🟣 **Monotonic Decreasing Queue**
+
+👉 Use case: You want to efficiently track the **maximum** value in a sliding window or a constrained sequence.
+
+---
+
+✅ **239. Sliding Window Maximum**
+*Find the maximum in each sliding window of size `k`.*
+
+* Classic monotonic decreasing queue: front of queue always has the maximum element.
+* [Link](https://leetcode.com/problems/sliding-window-maximum/)
+
+---
+
+✅ **1696. Jump Game VI**
+*You can jump at most `k` steps. Maximize the score.*
+
+* Monotonic decreasing queue tracks best (max) dp value within window.
+* [Link](https://leetcode.com/problems/jump-game-vi/)
+
+---
+
+✅ **1425. Constrained Subsequence Sum**
+*Choose a subsequence with max sum, where adjacent elements are at most `k` apart.*
+
+* Monotonic decreasing queue helps you get max dp value efficiently.
+* [Link](https://leetcode.com/problems/constrained-subsequence-sum/)
+
+---
+
+✅ **567. Permutation in String** (optional variation using mono queue if formulated as sliding window max count — not common but possible)
+
+---
+
+---
+
+### 🟣 **Monotonic Increasing Queue**
+
+👉 Use case: You want to efficiently track the **minimum** value or optimize prefix sums for shortest lengths.
+
+---
+
+✅ **862. Shortest Subarray with Sum at Least K**
+*Find the length of the shortest, contiguous subarray with sum ≥ K.*
+
+* Monotonic increasing queue tracks prefix sums (keep smallest prefix sums at front).
+* [Link](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/)
+
+---
+
+✅ **239. Sliding Window Minimum** (variation — LeetCode doesn’t have a separate problem but you can practice this by modifying Sliding Window Maximum to track min)
+
+---
+
+✅ **1102. Path With Maximum Minimum Value** (can be formulated with increasing queue for min path value — though typically done with heap)
+
+---
+
+✅ **1438. Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit**
+*Maintain both increasing and decreasing queues to check window validity.*
+
+* [Link](https://leetcode.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)
+
+---
+
+---
+
+## 📝 **Summary table**
+
+| Problem                                                | Monotonic queue type | What it tracks        |
+| ------------------------------------------------------ | -------------------- | --------------------- |
+| 239 Sliding Window Maximum                             | Decreasing           | Max in window         |
+| 1696 Jump Game VI                                      | Decreasing           | Max dp value          |
+| 1425 Constrained Subsequence Sum                       | Decreasing           | Max dp value          |
+| 862 Shortest Subarray with Sum ≥ K                     | Increasing           | Min prefix sum        |
+| 1438 Longest Continuous Subarray with Abs Diff ≤ Limit | Both                 | Max and min in window |
+
+---
+
+## ⚡ **Tips to remember**
+
+| Type                       | When to use                                 |
+| -------------------------- | ------------------------------------------- |
+| Monotonic decreasing queue | Need max in sliding window or dynamic range |
+| Monotonic increasing queue | Need min or optimize prefix sums            |
+
+👉 **Operations:**
+
+* Pop from back while maintaining monotonicity (when adding new elements)
+* Pop from front when element is out of window
+
+---
+
+## 🚀 **Next step?**
+
+💬 I can:
+✅ Build you C++/Python code templates for both types
+✅ Create a visual step-by-step trace on one of these problems
+✅ Build a custom LeetCode practice list for monotonic queue mastery
+
+Would you like that? 🚀
