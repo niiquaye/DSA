@@ -50,4 +50,21 @@ int brute_force(const std::vector<int>& array, int k)
 
     std::vector<SubArray> subarrays = generate_subarrays(array);
 
+    for (auto it = subarrays.begin(); it != subarrays.end();)
+    {
+        if (it->vector.size() != k)
+        {
+           it = subarrays.erase(it); // returns next iterator
+        }
+        else
+        {
+            it++;
+        }
+    }
+
+}
+
+int main (int argv, char* argc[])
+{
+    std::cout << "Hello World" << std::endl;
 }
