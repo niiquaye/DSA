@@ -73,6 +73,49 @@ int solution(const std::vector<int>& customers,
 
 }
 
+int optimal_solution(const std::vector<int>& customers, 
+                     const std::vector<int>& grumpy,
+                     const int minutes)
+{   
+
+    int available_max = [&]() -> int {
+        int sum {0};
+        for (int i = 0; i < customers.size(); i++)
+        {
+            sum = (!grumpy[i])? customers[i] + sum : sum;
+        }
+        return sum;
+    } ();
+
+    std::vector<int> prefix_sum_valid_customers = [&]() -> std::vector<int> {
+        std::vector<int> prefix_sum(customers.size()+1, 0);
+        for (int i = 0; i < customers.size(); i++)
+        {
+            prefix_sum[i+1] = ((grumpy[i])? customers[i] : 0 )+ prefix_sum[i];
+        }
+        return prefix_sum;
+    }();
+
+
+    //[1,0,1,2,1,1,7,5], 1+1+1+1+7+5
+    //[0,1,1,2,4,5,6,13,18] - prefix sum
+    //[0,1,0,1,0,1,0,1],
+
+    
+    //[1, 1, 3, 3, 2, 8, 12]
+    // sum subarrays of length minutes - find the maximum sum from this 
+    int window_sum = [&](const std::vector<int>& prefix_sum) -> int {
+        std::vector<int> window (customers.size() - minutes + 1, 0);
+        for (int i = 0; i < window.size(); i++)
+        {
+            window[i] = prefix_sum[i+minutes] - prefix_sum[i];
+        }
+        return *std::max_element(window.begin(), window.end());
+    } (prefix_sum_valid_customers);
+
+    return window_sum + available_max;
+}
+
 int main(int argv, char* argc[])
 {
 
