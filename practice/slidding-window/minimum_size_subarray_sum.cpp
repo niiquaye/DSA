@@ -53,11 +53,38 @@ int brute_force(const int target, const std::vector<int>& nums)
     return (min == std::numeric_limits<int>::max()) ? 0 : min;
 }
 
+
+int optimal_solution(const int target, const std::vector<int>& nums)
+{
+    if (nums.empty()) return 0;
+
+    int sum {0};
+    int left{0};
+    int len{std::numeric_limits<int>::max()};
+
+    // dynamic sliding window
+    for (int right = 0; right < nums.size(); right++)
+    {
+        sum += nums[right];
+    
+        while(sum >= target)
+        {
+            sum -= nums[left];
+            len = std::min(len, right - left + 1);
+            left++;
+        }
+    }
+    return (len == std::numeric_limits<int>::max())? 0 : len;
+}
+
 int main(int argc, char* argv[])
 {
     std::cout << "Minimum Size Subarray Sum: " << brute_force(7, {2,3,1,2,4,3}) << std::endl;
     std::cout << "Minimum Size Subarray Sum: " << brute_force(4, {1,4,4}) << std::endl;
     std::cout << "Minimum Size Subarray Sum: " << brute_force(11, {1,1,1,1,1,1,1,1}) << std::endl;
 
+    std::cout << "Minimum Size Subarray Sum: " << optimal_solution(7, {2,3,1,2,4,3}) << std::endl;
+    std::cout << "Minimum Size Subarray Sum: " << optimal_solution(4, {1,4,4}) << std::endl;
+    std::cout << "Minimum Size Subarray Sum: " << optimal_solution(11, {1,1,1,1,1,1,1,1}) << std::endl;
     return 0;
 }
