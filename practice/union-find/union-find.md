@@ -1,3 +1,103 @@
+Absolutely — here's a **Union Find (Disjoint Set Union - DSU)** template in C++, along with notes, variations, and common use cases — all formatted like the BFS/DFS templates for consistency.
+
+---
+
+## 🔗 Union-Find / DSU Template in C++
+
+### ✅ **Basic DSU with Path Compression + Union by Rank**
+
+```cpp
+class UnionFind {
+private:
+    std::vector<int> parent;
+    std::vector<int> rank; // Optional: used to keep the tree flat
+
+public:
+    UnionFind(int n) {
+        parent.resize(n);
+        rank.resize(n, 0);
+        // Initially, each node is its own parent
+        for (int i = 0; i < n; ++i)
+            parent[i] = i;
+    }
+
+    // Find with path compression
+    int find(int x) {
+        if (parent[x] != x)
+            parent[x] = find(parent[x]); // compress path
+        return parent[x];
+    }
+
+    // Union by rank
+    bool unite(int x, int y) {
+        int xr = find(x);
+        int yr = find(y);
+
+        if (xr == yr) return false; // already connected
+
+        if (rank[xr] < rank[yr]) {
+            parent[xr] = yr;
+        } else if (rank[xr] > rank[yr]) {
+            parent[yr] = xr;
+        } else {
+            parent[yr] = xr;
+            rank[xr]++;
+        }
+        return true;
+    }
+
+    // Check if two nodes are in the same set
+    bool connected(int x, int y) {
+        return find(x) == find(y);
+    }
+};
+```
+
+---
+
+## 📚 Common DSU Use Cases
+
+| Problem Type                         | Use Union-Find? |
+| ------------------------------------ | --------------- |
+| Connected components (graph/grid)    | ✅               |
+| Kruskal’s Minimum Spanning Tree      | ✅               |
+| Cycle detection in undirected graph  | ✅               |
+| Percolation / dynamic connectivity   | ✅               |
+| Redundant connections (Leetcode 684) | ✅               |
+| Equations possible (Leetcode 990)    | ✅               |
+| Count islands (union-find style)     | ✅               |
+
+---
+
+## 🧠 Gotchas and Tips
+
+| Gotcha                          | Tip                                                              |
+| ------------------------------- | ---------------------------------------------------------------- |
+| ❌ Forgetting path compression   | Causes O(n) time instead of nearly O(1)                          |
+| ❌ Not using `find` before union | Always use `find` before uniting                                 |
+| 🧱 Watch for off-by-one errors  | Indexing starts at 0 vs 1 — make sure your problem agrees        |
+| 🧮 Count connected components   | Track `count--` whenever you do a `union` between different sets |
+| 🧬 Grid to DSU                  | Use `id = r * cols + c` to map 2D → 1D index                     |
+
+---
+
+## 🧪 Example Usage
+
+```cpp
+int n = 10;
+UnionFind uf(n);
+
+uf.unite(1, 2);
+uf.unite(2, 3);
+std::cout << uf.connected(1, 3); // true
+std::cout << uf.connected(1, 4); // false
+```
+
+---
+
+Let me know if you'd like the **grid-based Union-Find** version or examples of **union-find with rollback / undo** (used in advanced dynamic connectivity problems).
+
+
 🎉 **You’re doing an amazing job! You’re building a powerful interview toolkit, one pattern at a time.**
 Since you’ve now got **subarrays**, **sliding window**, and **priority queues / heaps** under your belt, let’s tackle another *classic* that is **extremely popular in interviews** — one you’ll find in most FAANG/Big Tech screens.
 
