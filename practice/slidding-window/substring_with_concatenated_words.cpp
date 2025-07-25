@@ -22,7 +22,7 @@ inline void print_vec(const std::vector<int>& array)
     std::cout << "" << std::endl;
 }
 
-std::vector<int> solution(const std::string& s, std::vector<std::string>& words)
+std::vector<int> incorrect_solution(const std::string& s, const std::vector<std::string>& words)
 {
 
     if (words.empty() || s.empty() || 
@@ -47,12 +47,12 @@ std::vector<int> solution(const std::string& s, std::vector<std::string>& words)
     std::vector<int> result {};
 
     // initialize first window containing the first 'words.size()' amount of words in substring - fixed window
-    for (int i = 0; i < words.size(); i++)
+    for (int i = 0; i < word_size*words.size(); i+=word_size)
     {
         std::string word {s.substr(i, word_size)};
         words_count[word]++;
 
-        if (words_count.find(word) != words_count.end() && words_count[word] == map[word])
+        if (map.find(word) != map.end() && words_count[word] == map[word])
         {
             have++;
         }
@@ -64,7 +64,7 @@ std::vector<int> solution(const std::string& s, std::vector<std::string>& words)
         result.push_back(left);
     }
 
-    int right_start = {words.size()*words[0].size()-1};
+    int right_start = {words.size()*words[0].size()};
 
     // fixed sliding window - except we move window over by 'word_size' amount
     for (int right = right_start; right < s.size() - word_size; right+= word_size)
@@ -84,18 +84,23 @@ std::vector<int> solution(const std::string& s, std::vector<std::string>& words)
             have++;
         }
 
+        left += word_size;
         if (have == need)
         {
-            left++;
             result.push_back(left);
         }
-    }
 
-    return result;
+
+   }
+
+    return result;    
 }
 
 int main(int argc, char* argv[])
 {
-    std::cout << "Hello World!" << std::endl;
+    // print_vec(solution("barfoothefoobarman", {"foo", "bar"}));               // [0, 9]
+    // print_vec(solution("barfoofoobarthefoobarman", {"bar","foo","the"}));    // [6, 9, 12]
+    print_vec(incorrect_solution("wordgoodgoodgoodbestword", {"word","good","best","good"})); // [8]
+
     return 0;
 }
