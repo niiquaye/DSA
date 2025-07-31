@@ -14,13 +14,19 @@
 
 bool solution_bfs(int n, const std::vector<std::vector<int>>& edges)
 {
-    if (n < 0 || edges.empty()) return true;
+    if (n <= 0) return false;
+    if (n == 1 && edges.empty()) return true;
 
     std::queue<int> queue {};
     std::vector<int> indegrees (n, 0);
 
     std::unordered_map<int, std::vector<int>> map {};
-    std::vector<int> topological_sort {};
+    std::vector<int> visited (n, 0);
+
+    if (edges.size() != n - 1)
+    {
+        return false;
+    }
 
     for (const auto e : edges)
     {
@@ -33,23 +39,23 @@ bool solution_bfs(int n, const std::vector<std::vector<int>>& edges)
 
     for (int i = 0; i < n; i++)
     {
-        if (indegrees[i] == 0)
+        if (indegrees[i] == 1)
         {
             queue.push(i);
         }
     }
-
+    int count {0};
     while(!queue.empty())
     {
         auto top = queue.front();
         queue.pop();
 
-        topological_sort.push_back(top);
-
+        count++;
+        visited[top] = 1;
         for (const auto nei : map[top])
         {
             indegrees[nei]--;
-            if (indegrees[nei] == 0)
+            if (indegrees[nei] == 1)
             {
                 queue.push(nei);
             }
@@ -57,7 +63,19 @@ bool solution_bfs(int n, const std::vector<std::vector<int>>& edges)
         
     }
 
-    return topological_sort.size() == n;
+    if (count != n)
+    {
+        return false;
+    }
+
+    int sum = std::accumulate(visited.begin(), visited.end(), 0);
+
+    if (sum != n)
+    {
+        return false;
+    }
+
+    return true;
 
 }
 
