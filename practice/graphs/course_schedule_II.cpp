@@ -23,6 +23,59 @@ inline void print_vec(const std::vector<int>& array)
     std::cout << "" << std::endl;
 }
 
+std::vector<int> solution_dfs(int n, const std::vector<std::vector<int>>& prerequisites)
+{
+    if (n <= 0 || prerequisites.empty() || prerequisites[0].empty()) return {};
+
+    std::unordered_map<int, std::vector<int>> map {};
+    std::vector<int> rev_topological_sort {};
+
+    std::vector<bool> visited(n, false);
+    std::vector<bool> on_path(n, false);
+
+    for (const auto edge : prerequisites)
+    {
+        // u -> v
+        int u = edge[1]; // b_i
+        int v = edge[0]; // a_i
+        
+        map[u].push_back(v);
+    }
+
+    std::function<bool(int)> dfs_cycle_detect = [&](int node) -> bool 
+    {
+        if (on_path[node] == true) return true; // !!check if on_path is violated first!!
+        if (visited[node] == true) return false;
+
+        visited[node] = true;
+        on_path[node] = true;
+
+        for(const auto nei : map[node])
+        {
+            if (visited[nei] == false)
+            {
+                if(dfs_cycle_detect(nei))
+                {
+                    return true;
+                }
+            }
+        }
+
+        on_path[node] = false;
+        rev_topological_sort.push_back(node);
+        return false;
+    };
+
+    // must loop through to do dfs over potentially potentially disconneted components
+    for (int i = 0; i < n; i++)
+    {
+        if (visited[i] == false && dfs_cycle_detect(i)) return {}; //cycle detected
+    }
+
+    std::reverse(rev_topological_sort.begin(), rev_topological_sort.end());
+    return rev_topological_sort;
+}
+
 std::vector<int> solution_bfs(int n, const std::vector<std::vector<int>>& prerequisites)
 {
     if (n <= 0 || prerequisites.empty() || prerequisites[0].empty()) return {};
@@ -80,8 +133,14 @@ std::vector<int> solution_bfs(int n, const std::vector<std::vector<int>>& prereq
 
 int main(int argc, char* argv[])
 {
+    std::cout << "SOLUTION BFS" << std::endl;
     print_vec(solution_bfs(2, {{1,0}}));
     print_vec(solution_bfs(4, {{1,0}, {2,0}, {3,1}, {3,2}}));
     print_vec(solution_bfs(1, {{}}));
+
+    std::cout << "SOLUTION DFS" << std::endl;
+    print_vec(solution_dfs(2, {{1,0}}));
+    print_vec(solution_dfs(4, {{1,0}, {2,0}, {3,1}, {3,2}}));
+    print_vec(solution_dfs(1, {{}}));
     return 0;
 }
