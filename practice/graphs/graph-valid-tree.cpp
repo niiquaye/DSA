@@ -12,6 +12,55 @@
 #include <queue>
 #include <memory>
 
+
+bool solution_dfs(int n, const std::vector<std::vector<int>>& edges)
+{
+    if (n <= 0) return false;
+    if (n == 1 && edges.empty()) return true;
+    if (edges.size() != n - 1) return false;
+
+    std::unordered_map<int, std::vector<int>> map {};
+    std::vector<bool> visited (n, false);
+
+    for (const auto e : edges)
+    {
+        map[e[0]].push_back(e[1]);
+        map[e[1]].push_back(e[0]);
+    }
+
+    std::function<bool(int, int)> detect_cyle_undirected = [&](int node, int parent) -> bool 
+    {
+        visited[node] = true;
+
+        for (const auto nei : map.at(node))
+        {
+            if (visited[nei] == false)
+            {
+                if (detect_cyle_undirected(nei, node)) return true;
+            }
+            else if (parent != nei)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    if (detect_cyle_undirected(0, -1)) return false;
+
+    for (int i = 0; i < n; i++)
+    {
+        if (visited[i] == false)
+        {
+            return false;
+        }
+    }
+
+    return true;
+
+}
+
 bool solution_bfs(int n, const std::vector<std::vector<int>>& edges)
 {
     if (n <= 0) return false;
