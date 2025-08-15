@@ -14,6 +14,7 @@
 #include <memory>
 #include <thread>
 #include <mutex>
+#include <atomic>
 
 template<typename T>
 class BoundedQueue
@@ -21,25 +22,25 @@ class BoundedQueue
 
 public:
 
-    BoundedQueue(size_t capacity) : capacity(capacity) {}
-
+    BoundedQueue(size_t capacity) : capacity(capacity), closed(false) {}
     // blocking call
-    void pop(T& out)
+    bool pop(T& out)
     {
         {
-            std::unique_lock<std::mutex> lock(mutex)
-            not_empty.wait(lock, [this]() {return !queue.empty()});
-            // if (queue.empty()) {return false;}
+            std::unique_lock<std::mutex> lock(mutex);
+            not_empty.wait(lock, [this]() {return !queue.empty() || closed == true});
+            if (queue.empty()) {return false;}
             out = std::move(queue.front());
             queue.pop();
         }
         not_full.notify_one();
+        return true;
     }
 
     bool try_pop(T& out)
     {
         {
-            std::unique_lock<std::mutex> lock(mutex)
+            std::unique_lock<std::mutex> lock(mutex);
             if (queue.empty()) {return false;}
             out = std::move(queue.front());
             queue.pop();
@@ -49,20 +50,32 @@ public:
     }
 
     // blocking call
-    void push(const T& val)
+    bool push(const T& val)
     {
         {
-            std::unique_lock<std::mutex> lock(mutex)
-            not_full.wait(lock, [this]() {return queue.size() < capacity});
-            // if (queue.size() >= capacity) {return false;}
+            std::unique_lock<std::mutex> lock(mutex);
+            not_full.wait(lock, [this]() {return queue.size() < capacity || closed == true});
+            if (closed == true) {return false;}
             queue.push(val);
         }
         not_empty.notify_one();
+        return true;
+    }
+
+    void close()
+    {
+        {
+            std::unique_lock<std::mutex> lock(mutex);
+            closed = true;
+        }
+        not_full.notify_all();
+        not_empty.notify_all();
     }
 
 private:
     size_t capacity;
     std::mutex mutex;
+    bool closed;
     std::condition_variable not_full;
     std::condition_variable not_empty;
     std::queue<T> queue;
