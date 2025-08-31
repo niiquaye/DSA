@@ -76,6 +76,32 @@ int solution(int n, const std::vector<std::vector<int>>& flight, int src, int ds
     return res;
 }
 
+int solution_bellman_ford(int n, const std::vector<std::vector<int>>& flight, int src, int dst, int k)
+{
+    std::vector<int> distances(n, std::numeric_limits<int>::max());
+
+    // set distance[src] = 0 & everything else to to INT_MAX
+    distances[src] = 0;
+
+    // no more than k stops which is really k + 1 edges as we traverse the edges in graph
+    for (size_t i = 0; i <= k; i++)
+    {
+        std::vector<int> ndist = distances; // copy
+        for (const auto& f : flight)
+        {
+            int u = f[0] /*from*/, v = f[1] /*to*/, w = f[2] /*cost*/;
+            if (ndist[v] != std::numeric_limits<int>::max())
+            {
+                // do we take new distance with added cost or keep old distance
+                ndist[v] = std::min(ndist[v], distances[u] + w);
+            }
+        }
+        distances.swap(ndist);
+    }
+
+    return (distances[dst] == std::numeric_limits<int>::max())?  -1 : distances[dst];
+}
+
 int main(int argc, char* argv[])
 {
     std::cout << "Hello World" << std::endl;
